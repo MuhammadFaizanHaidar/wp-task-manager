@@ -42,6 +42,4 @@ class Wp_Task_Manager_i18n {
 
 	}
 
-
-
 }

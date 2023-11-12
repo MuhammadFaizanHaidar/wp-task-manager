@@ -117,10 +117,21 @@ class Wp_Task_Manager {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-wp-task-manager-admin.php';
 
 		/**
+		 * The class responsible for defining all actions that occur in the admin area for CPT registeration and management.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/CPT/class-wp-task-manager-cpt.php';
+
+		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-wp-task-manager-public.php';
+
+		/**
+		 * The class responsible for orchestrating the actions and filters of the
+		 * core plugin.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/API/class-wp-task-manager-cpt-api.php';
 
 		$this->loader = new Wp_Task_Manager_Loader();
 
@@ -139,7 +150,11 @@ class Wp_Task_Manager {
 
 		$plugin_i18n = new Wp_Task_Manager_i18n();
 
-		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
+		$this->loader->add_action(
+			'plugins_loaded',
+			$plugin_i18n,
+			'load_plugin_textdomain'
+		);
 
 	}
 
@@ -153,9 +168,68 @@ class Wp_Task_Manager {
 	private function define_admin_hooks() {
 
 		$plugin_admin = new Wp_Task_Manager_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_cpt   = new Wp_Task_Manager_CPT( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action(
+			'init',
+			$plugin_cpt,
+			'wp_task_manager_create_custom_post_type_task',
+			10
+		);
+
+		$this->loader->add_action(
+			'admin_notices',
+			$plugin_admin,
+			'wp_task_manager_due_task_admin_notifications'
+		);
+		
+		$this->loader->add_action(
+			'admin_enqueue_scripts',
+			$plugin_admin,
+			'enqueue_styles'
+		);
+
+		$this->loader->add_action(
+			'admin_enqueue_scripts',
+			$plugin_admin,
+			'enqueue_scripts'
+		);
+
+		$this->loader->add_action(
+			'add_meta_boxes',
+			$plugin_cpt,
+			'wp_task_manager_add_post_metaboxes'
+		);
+
+		$this->loader->add_action(
+			'save_post',
+			$plugin_cpt,
+			'wp_task_manager_save_post_meta',
+			10,
+			3
+		);
+
+		$this->loader->add_action(
+			'post_updated',
+			$plugin_cpt,
+			'wp_task_manager_save_post_meta',
+			10,
+			3
+		);
+
+		$this->loader->add_filter(
+			'manage_wptaskmanager_posts_columns',
+			$plugin_cpt,
+			'wp_task_manager_add_custom_column_wptaskmanager'
+		);
+
+		$this->loader->add_action(
+			'manage_wptaskmanager_posts_custom_column',
+			$plugin_cpt,
+			'wp_task_manager_manage_custom_column_wptaskmanager',
+			10,
+			2
+		);
 
 	}
 
@@ -166,12 +240,28 @@ class Wp_Task_Manager {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function define_public_hooks() {
+	public function define_public_hooks() {
 
-		$plugin_public = new Wp_Task_Manager_Public( $this->get_plugin_name(), $this->get_version() );
+		$plugin_public    = new Wp_Task_Manager_Public( $this->get_plugin_name(), $this->get_version() );
+		$plugin_tasks_API = new Wp_Task_Manager_CPT_Api();
 
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		$this->loader->add_action(
+			'rest_api_init',
+			$plugin_tasks_API,
+			'register_rest_route_tasks'
+		);
+
+		$this->loader->add_action(
+			'wp_enqueue_scripts',
+			$plugin_public,
+			'enqueue_styles'
+		);
+
+		$this->loader->add_action(
+			'wp_enqueue_scripts',
+			$plugin_public,
+			'enqueue_scripts'
+		);
 
 	}
 

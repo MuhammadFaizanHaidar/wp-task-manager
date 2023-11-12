@@ -79,4 +79,4 @@ function run_wp_task_manager() {
 	$plugin->run();
 
 }
-run_wp_task_manager();
+add_action( 'plugins_loaded', 'run_wp_task_manager', 10 );

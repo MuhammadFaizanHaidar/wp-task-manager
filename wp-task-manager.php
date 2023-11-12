@@ -74,9 +74,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-wp-task-manager.php';
  * @since    1.0.0
  */
 function run_wp_task_manager() {
-
-	$plugin = new Wp_Task_Manager();
+	$plugin = Wp_Task_Manager::getInstance();
 	$plugin->run();
-
 }
 add_action( 'plugins_loaded', 'run_wp_task_manager', 10 );

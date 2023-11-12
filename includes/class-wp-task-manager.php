@@ -58,6 +58,16 @@ class Wp_Task_Manager {
 	protected $version;
 
 	/**
+	 * The instance the plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      class    $instance    The instance of the class.
+	 */
+	
+	private static $instance = null;
+
+	/**
 	 * Define the core functionality of the plugin.
 	 *
 	 * Set the plugin name and the plugin version that can be used throughout the plugin.
@@ -79,6 +89,16 @@ class Wp_Task_Manager {
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 
+	}
+
+	// The object is created from within the class itself
+	// only if the class has no instance.
+	public static function getInstance() {
+		if ( self::$instance == null ) {
+			self::$instance = new Wp_Task_Manager();
+		}
+	
+		return self::$instance;
 	}
 
 	/**
@@ -182,7 +202,7 @@ class Wp_Task_Manager {
 			$plugin_admin,
 			'wp_task_manager_due_task_admin_notifications'
 		);
-		
+
 		$this->loader->add_action(
 			'admin_enqueue_scripts',
 			$plugin_admin,

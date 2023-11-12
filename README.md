@@ -6,6 +6,7 @@
 This WordPress plugin provides a RESTful API for managing tasks. It allows you to perform CRUD (Create, Read, Update, Delete) operations on tasks, providing flexibility for integration with external applications.
 Plugin serves as a RESTful API for a specialized to-do list application. The plugin  showcases my proficiency in coding standards, creativity in problem-solving, and ability in integrating functionalities within the WordPress framework.
 This plugin shows admin a list of notices based on the tasks that are due today/current_date and are open/in_progress.
+![Admin Notices](images/admin-notice.png)
 
 ## API Endpoints
 
@@ -18,6 +19,7 @@ This plugin shows admin a list of notices based on the tasks that are due today/
   - `description`: Task description (optional).
   - `due_date`: Due date of the task (optional).
   - `status`: Status of the task (optional).
+![Add Task](images/add-task.png)
 
 ### 2. Update a Task
 
@@ -29,6 +31,7 @@ This plugin shows admin a list of notices based on the tasks that are due today/
   - `description`: Updated task description.
   - `status`: Updated task status.
   - `due_date`: Updated due date.
+![Update Task](images/update-task.png)
 
 ### 3. Delete a Task
 
@@ -36,6 +39,7 @@ This plugin shows admin a list of notices based on the tasks that are due today/
 - **Method:** `DELETE`
 - **Parameters:**
   - `id` (required): ID of the task to be deleted.
+![Delete Task](images/delete-task.png)
 
 ### 4. Get All Tasks
 
@@ -46,6 +50,7 @@ This plugin shows admin a list of notices based on the tasks that are due today/
   - `due_start_date`: Tasks due on or after this date.
   - `due_end_date`: Tasks due on or before this date.
   - `status`: Array of task statuses.
+![LIST Tasks](images/list-tasks.png)
 
 ## Authentication
 

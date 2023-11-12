@@ -141,6 +141,7 @@ class Wp_Task_Manager_Admin {
 		if ( ! is_admin() ) {
 			return;
 		}
+		
 
 		$class   = 'notice is-dismissible error';
 		$message = '';
@@ -167,7 +168,6 @@ class Wp_Task_Manager_Admin {
 
 		$query_args_post['meta_query'] = $meta_query;
 		$due_tasks                     = get_posts( $query_args_post );
-
 		if ( ! empty( $due_tasks ) ) {
 			foreach ( $due_tasks as $due_task ) :
 				$message = esc_html__( 'Today due tasks: ', 'wp-task-manager' ) . '<a href="https://google.com" class="btn btn-primary">' . $due_task->post_title . '</a>';
